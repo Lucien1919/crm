@@ -85,11 +85,12 @@ export default defineConfig({
     // 代理
     proxy: {
       "/api": {
-        target: "",
-        changeOrigin: true
+        target: "http://testerp.vidagrid.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, "")
       }
     }
-  },
+  }
   // css: {
   //   // css预处理器
   //   preprocessorOptions: {

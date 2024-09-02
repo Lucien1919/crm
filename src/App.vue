@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router"
+import useLoading from "./components/useLoading.vue"
 import { theme } from "ant-design-vue"
 
 const themeName = ref<"defaultAlgorithm" | "darkAlgorithm">("defaultAlgorithm")
@@ -12,6 +13,7 @@ const themeName = ref<"defaultAlgorithm" | "darkAlgorithm">("defaultAlgorithm")
     }"
     :dropdownMatchSelectWidth="false"
   >
+    <use-loading></use-loading>
     <router-view></router-view>
   </a-config-provider>
 </template>

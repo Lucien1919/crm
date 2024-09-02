@@ -1,6 +1,6 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios"
 import type { InternalAxiosRequestConfig } from "axios"
-import { getToken, removeToken, setToken } from "@/utils/index"
+import { getCookie } from "@/utils/index"
 import router from "@/router"
 import message from "ant-design-vue/es/message"
 
@@ -10,16 +10,17 @@ export interface ResDataType<T> {
   msg?: string
 }
 let source = axios.CancelToken.source()
+
 const instance = axios.create({
   timeout: 10000,
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "/api",
   withCredentials: true
 })
 
 instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (!config.headers.Authorization && getToken()) {
-    config.headers.Authorization = getToken()
-  }
+  // if (!config.headers.Authorization && getToken()) {
+  //   config.headers.Authorization = getToken()
+  // }
   return config
 })
 

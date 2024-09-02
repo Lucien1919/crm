@@ -1,12 +1,25 @@
 <script lang="ts" setup>
 import { RouterLink, RouterView } from "vue-router"
 import { theme } from "ant-design-vue"
+import { authRoutes, type RowMeta } from "@/router/index"
 const themeName = ref<"defaultAlgorithm" | "darkAlgorithm">("defaultAlgorithm")
 import { ref } from "vue"
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from "@ant-design/icons-vue"
-const selectedKeys1 = ref<string[]>(["2"])
 const selectedKeys2 = ref<string[]>(["1"])
 const openKeys = ref<string[]>(["sub1"])
+
+const router = useRouter()
+const route = useRoute()
+const menuList = ref(authRoutes[0])
+const selectedKeys1 = ref<string[]>([menuList.value.children![0].name as string])
+
+const activeHeadMenu = ref(menuList.value.children![0].children![0])
+const selectHeadMenu = (item: RowMeta) => {
+  activeHeadMenu.value = item
+  console.log(activeHeadMenu)
+}
+
+onMounted(() => {})
 </script>
 
 <template>
@@ -14,9 +27,9 @@ const openKeys = ref<string[]>(["sub1"])
     <a-layout-header class="header">
       <div class="logo" />
       <a-menu v-model:selectedKeys="selectedKeys1" theme="dark" mode="horizontal" :style="{ lineHeight: '48px' }">
-        <a-menu-item key="1">nav 1</a-menu-item>
-        <a-menu-item key="2">nav 2</a-menu-item>
-        <a-menu-item key="3">nav 3</a-menu-item>
+        <a-menu-item v-for="item in menuList.children" :key="item.name" @click="selectHeadMenu(item)">
+          {{ item.meta.title }}
+        </a-menu-item>
       </a-menu>
     </a-layout-header>
     <a-layout>
@@ -27,18 +40,20 @@ const openKeys = ref<string[]>(["sub1"])
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
         >
-          <a-sub-menu key="sub1">
+          <a-sub-menu v-for="item in activeHeadMenu.children" :key="item.name">
             <template #title>
-              <span>
+              <span>·
                 <user-outlined />
                 subnav 1
               </span>
             </template>
+            <a-menu-item v-for="sideItem in item" :key="sideItem.name">{{ item.meta.title }}</a-menu-item>
             <a-menu-item key="1">option1</a-menu-item>
             <a-menu-item key="2">option2</a-menu-item>
             <a-menu-item key="3">option3</a-menu-item>
             <a-menu-item key="4">option4</a-menu-item>
           </a-sub-menu>
+
           <a-sub-menu key="sub2">
             <template #title>
               <span>
@@ -72,7 +87,7 @@ const openKeys = ref<string[]>(["sub1"])
           <a-breadcrumb-item>App</a-breadcrumb-item>
         </a-breadcrumb>
         <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
-          Content
+          <router-view></router-view>
         </a-layout-content>
       </a-layout>
     </a-layout>

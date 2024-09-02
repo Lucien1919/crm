@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-router"
 import layout from "@/views/layout/index.vue"
+import { getCookie } from "@/utils/index"
 export type role = "admin" | "dealer" | "end_user"
 
 export type RowMeta = {
@@ -17,8 +18,8 @@ export const whiteRoutes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "login",
     meta: { title: "登陆" },
-    beforeEnter: (to, from, next) => {},
-    component: () => {}
+    // beforeEnter: (to, from, next) => {},
+    component: () => import("@/views/login/index.vue")
   }
 ]
 
@@ -49,6 +50,20 @@ export const authRoutes: Array<RowMeta> = [
                 component: () => import("@/views/order/salesOrder/deviceOrder/index.vue")
               }
             ]
+          },
+          {
+            path: "shipRegist",
+            name: "shipRegist",
+            redirect: "/order/salesOrder/device",
+            meta: { title: "出货登记", roles: ["admin", "dealer", "end_user"] },
+            children: [
+              {
+                path: "device",
+                name: "device",
+                meta: { title: "设备", roles: ["admin", "dealer", "end_user"] },
+                component: () => import("@/views/order/shipRegist/device/index.vue")
+              }
+            ]
           }
         ]
       }
@@ -70,23 +85,24 @@ const router = createRouter({
 
 const whiteNames = whiteRoutes.map((item) => item.name)
 
-// router.beforeEach(async (to, from, next) => {
-//   window.$loading.start()
-//   const token = getToken()
+router.beforeEach(async (to, from, next) => {
+  window.$loading.start()
 
-//   if (whiteNames.includes(to.name as string)) {
-//     return next()
-//   }
-//   if (!token || !userInfo) {
-//     return next("/login")
-//   }
+  if (whiteNames.includes(to.name as string)) {
+    return next()
+  }
 
-//   next()
-// })
+  //可能还需要加入userinfo校验
+  if (!getCookie("gfsessionid")) {
+    return next("/login")
+  }
 
-// router.afterEach((to) => {
-//   // window.$loading.finish()
-//   document.title = `${to.meta.title}`
-// })
+  next()
+})
+
+router.afterEach((to) => {
+  window.$loading.finish()
+  document.title = `${to.meta.title}`
+})
 
 export default router
