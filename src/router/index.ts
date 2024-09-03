@@ -92,8 +92,9 @@ router.beforeEach(async (to, from, next) => {
     return next()
   }
 
-  //可能还需要加入userinfo校验
+  // 可能还需要加入userinfo校验
   if (!getCookie("gfsessionid")) {
+    debugger
     return next("/login")
   }
 

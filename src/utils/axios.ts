@@ -49,7 +49,7 @@ const request = async <T>(config: CusCofing): Promise<ResDataType<T>> => {
     }
 
     const response = await instance({ ...config, cancelToken: source.token })
-    return { data: response.data }
+    return response
   } catch (error: any) {
     return { msg: error }
   }

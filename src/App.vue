@@ -12,6 +12,7 @@ const themeName = ref<"defaultAlgorithm" | "darkAlgorithm">("defaultAlgorithm")
       algorithm: theme[themeName]
     }"
     :dropdownMatchSelectWidth="false"
+    componentSize="large"
   >
     <use-loading></use-loading>
     <router-view></router-view>

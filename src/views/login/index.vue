@@ -3,15 +3,18 @@ import { reactive, ref } from "vue"
 import type { Rule } from "ant-design-vue/es/form"
 import type { FormInstance } from "ant-design-vue"
 import { sha1 } from "@/utils/index"
+import { login } from "@/api/base"
 
 const formRef = ref<FormInstance>()
 const formState = reactive({
-  name: "",
+  username: "",
   password: "",
-  verifiCode: undefined
+  verifiCode: ""
 })
-const imgSource = () => {
-  return import.meta.env.VITE_HOST + "captcha?"
+
+const codeImgRef = ref()
+const refrashCode = () => {
+  codeImgRef.value.src = document.location.origin + "/api" + "/captcha?" + Date.now()
 }
 
 const validatePass = async (_rule: Rule, value: string) => {
@@ -22,22 +25,37 @@ const validatePass = async (_rule: Rule, value: string) => {
 }
 
 const rules: Record<string, Rule[]> = {
-  name: [{ required: true, message: "请输入账号", trigger: "change" }],
-  password: [{ validator: validatePass, trigger: "change" }]
-  // verifiCode: [{ required: true, trigger: "change" }]
+  username: [{ required: true, message: "请输入账号", trigger: "change" }],
+  password: [{ validator: validatePass, trigger: "change" }],
+  verifiCode: [{ required: true, message: "请输入验证码", trigger: "change" }]
 }
 const layout = {
   // labelCol: { span: 4 },
   wrapperCol: { span: 24 }
 }
-const handleFinish = (values: keyof typeof formState) => {
+
+const router = useRouter()
+const handleFinish = async (values: keyof typeof formState) => {
   console.log(sha1(formState.password))
+  const params = {
+    username: formState.username,
+    password: sha1(formState.verifiCode + sha1(formState.password)),
+    captcha: Number(formState.verifiCode)
+  }
+  const { data, code } = await login(params)
+  if (code == 0) {
+    router.push("/")
+  }
+
+  // sha1(this.loginForm.get('captcha').value + sha1(this.loginForm.get('password').value)),
 }
 const handleFinishFailed = (errors: any) => {
   console.log(errors)
 }
 
-onMounted(async () => {})
+onMounted(() => {
+  refrashCode()
+})
 </script>
 <template>
   <div class="login-page">
@@ -51,24 +69,24 @@ onMounted(async () => {})
       @finish="handleFinish"
       @finishFailed="handleFinishFailed"
     >
-      <a-form-item has-feedback name="name">
-        <a-input size="large" v-model:value="formState.name" autocomplete="off" placeholder="请输入账号" />
+      <a-form-item has-feedback name="username">
+        <a-input v-model:value="formState.username" autocomplete="off" placeholder="请输入账号" />
       </a-form-item>
       <a-form-item has-feedback name="password">
-        <a-input-password size="large" v-model:value="formState.password" autocomplete="off" placeholder="请输入密码" />
+        <a-input-password v-model:value="formState.password" autocomplete="off" placeholder="请输入密码" />
       </a-form-item>
       <a-form-item has-feedback name="verifiCode">
         <a-row>
           <a-col :span="12">
-            <a-input size="large" v-model:value="formState.verifiCode" placeholder="请输入验证码" />
+            <a-input v-model:value="formState.verifiCode" placeholder="请输入验证码" />
           </a-col>
           <a-col :span="10" :offset="2">
-            <img class="login-page-form-img" :src="imgSource()" />
+            <img ref="codeImgRef" @click="refrashCode()" class="login-page-form-img" />
           </a-col>
         </a-row>
       </a-form-item>
       <a-form-item>
-        <a-button size="large" class="login-page-form-btn" type="primary" html-type="submit">登录</a-button>
+        <a-button class="login-page-form-btn" type="primary" html-type="submit">登录</a-button>
       </a-form-item>
     </a-form>
   </div>

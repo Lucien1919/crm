@@ -14,3 +14,14 @@ export const getCookie = (name: string): string | null => {
 export const sha1 = (str: string) => {
   return CryptoJS.SHA1(str).toString()
 }
+
+// obj to url
+export const parseQueryStr = (obj: any) => {
+  let str = ""
+  for (let key in obj) {
+    if (obj[key] !== undefined && obj[key] !== null) {
+      str += `${key}=${obj[key]}&`
+    }
+  }
+  return str.slice(0, -1)
+}

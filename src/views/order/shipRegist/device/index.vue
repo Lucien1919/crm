@@ -13,6 +13,6 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class=""></div>
+  <div class="">设备</div>
 </template>
 <style lang="scss" scoped></style>
