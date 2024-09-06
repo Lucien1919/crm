@@ -70,7 +70,7 @@ onMounted(() => {})
             <router-link :to="item"> {{ item.meta.title }} </router-link>
           </a-breadcrumb-item>
         </a-breadcrumb>
-        <a-layout-content :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }">
+        <a-layout-content :style="{ margin: 0 }">
           <router-view></router-view>
         </a-layout-content>
       </a-layout>

@@ -46,8 +46,6 @@ const handleFinish = async (values: keyof typeof formState) => {
   if (code == 0) {
     router.push("/")
   }
-
-  // sha1(this.loginForm.get('captcha').value + sha1(this.loginForm.get('password').value)),
 }
 const handleFinishFailed = (errors: any) => {
   console.log(errors)
@@ -59,36 +57,38 @@ onMounted(() => {
 </script>
 <template>
   <div class="login-page">
-    <a-form
-      class="login-page-form"
-      ref="formRef"
-      name="custom-validation"
-      :model="formState"
-      :rules="rules"
-      v-bind="layout"
-      @finish="handleFinish"
-      @finishFailed="handleFinishFailed"
-    >
-      <a-form-item has-feedback name="username">
-        <a-input v-model:value="formState.username" autocomplete="off" placeholder="请输入账号" />
-      </a-form-item>
-      <a-form-item has-feedback name="password">
-        <a-input-password v-model:value="formState.password" autocomplete="off" placeholder="请输入密码" />
-      </a-form-item>
-      <a-form-item has-feedback name="verifiCode">
-        <a-row>
-          <a-col :span="12">
-            <a-input v-model:value="formState.verifiCode" placeholder="请输入验证码" />
-          </a-col>
-          <a-col :span="10" :offset="2">
-            <img ref="codeImgRef" @click="refrashCode()" class="login-page-form-img" />
-          </a-col>
-        </a-row>
-      </a-form-item>
-      <a-form-item>
-        <a-button class="login-page-form-btn" type="primary" html-type="submit">登录</a-button>
-      </a-form-item>
-    </a-form>
+    <a-config-provider componentSize="large">
+      <a-form
+        class="login-page-form"
+        ref="formRef"
+        name="custom-validation"
+        :model="formState"
+        :rules="rules"
+        v-bind="layout"
+        @finish="handleFinish"
+        @finishFailed="handleFinishFailed"
+      >
+        <a-form-item has-feedback name="username">
+          <a-input v-model:value="formState.username" autocomplete="off" placeholder="请输入账号" />
+        </a-form-item>
+        <a-form-item has-feedback name="password">
+          <a-input-password v-model:value="formState.password" autocomplete="off" placeholder="请输入密码" />
+        </a-form-item>
+        <a-form-item has-feedback name="verifiCode">
+          <a-row>
+            <a-col :span="12">
+              <a-input v-model:value="formState.verifiCode" placeholder="请输入验证码" />
+            </a-col>
+            <a-col :span="10" :offset="2">
+              <img ref="codeImgRef" @click="refrashCode()" class="login-page-form-img" />
+            </a-col>
+          </a-row>
+        </a-form-item>
+        <a-form-item>
+          <a-button class="login-page-form-btn" type="primary" html-type="submit">登录</a-button>
+        </a-form-item>
+      </a-form>
+    </a-config-provider>
   </div>
 </template>
 <style lang="less">

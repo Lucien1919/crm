@@ -38,6 +38,9 @@ importers:
       pinia:
         specifier: ^2.1.7
         version: 2.2.2(typescript@5.4.5)(vue@3.4.38(typescript@5.4.5))
+      use-scrollbars:
+        specifier: ^0.4.11
+        version: 0.4.11(vue@3.4.38(typescript@5.4.5))
       vue:
         specifier: ^3.4.29
         version: 3.4.38(typescript@5.4.5)
@@ -662,11 +665,20 @@ packages:
   '@vueuse/components@11.0.3':
     resolution: {integrity: sha512-/mbv4R1ody3rYz42U14SQ6GkAKHCAHhFIBdR6nKJbEJeFMoiB93dzX0sT2S05CpYCJJgv3JLAwEHeehYqqmbyQ==}
 
+  '@vueuse/core@10.11.1':
+    resolution: {integrity: sha512-guoy26JQktXPcz+0n3GukWIy/JDNKti9v6VEMu6kV2sYBsWuGiTU8OWdg+ADfUbHg3/3DlqySDe7JmdHrktiww==}
+
   '@vueuse/core@11.0.3':
     resolution: {integrity: sha512-RENlh64+SYA9XMExmmH1a3TPqeIuJBNNB/63GT35MZI+zpru3oMRUA6cEFr9HmGqEgUisurwGwnIieF6qu3aXw==}
 
+  '@vueuse/metadata@10.11.1':
+    resolution: {integrity: sha512-IGa5FXd003Ug1qAZmyE8wF3sJ81xGLSqTqtQ6jaVfkeZ4i5kS2mwQF61yhVqojRnenVew5PldLyRgvdl4YYuSw==}
+
   '@vueuse/metadata@11.0.3':
     resolution: {integrity: sha512-+FtbO4SD5WpsOcQTcC0hAhNlOid6QNLzqedtquTtQ+CRNBoAt9GuV07c6KNHK1wCmlq8DFPwgiLF2rXwgSHX5Q==}
+
+  '@vueuse/shared@10.11.1':
+    resolution: {integrity: sha512-LHpC8711VFZlDaYUXEBbFBCQ7GS3dVU9mjOhhMhXP6txTV4EhYQg/KGnQuvt/sPAtoUKq7VVUnL6mVtFoL42sA==}
 
   '@vueuse/shared@11.0.3':
     resolution: {integrity: sha512-0rY2m6HS5t27n/Vp5cTDsKTlNnimCqsbh/fmT2LgE+aaU42EMfXo8+bNX91W9I7DDmxfuACXMmrd7d79JxkqWA==}
@@ -1867,6 +1879,12 @@ packages:
   urijs@1.19.11:
     resolution: {integrity: sha512-HXgFDgDommxn5/bIv0cnQZsPhHDA90NPHD6+c/v21U5+Sx5hoP8+dP9IZXBU1gIfvdRfhG8cel9QNPeionfcCQ==}
 
+  use-scrollbars@0.4.11:
+    resolution: {integrity: sha512-2g2JwnuDLH3aDAXmiOFJlFAUZ2TO2+1hT53ElNhK9kOkxk1mqUz/hcGXTgryOFdM0A8LSgyYMHNLIFGx6kSCew==}
+    engines: {node: '>=16', pnpm: '>=7'}
+    peerDependencies:
+      vue: ^3
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -2551,6 +2569,16 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
+  '@vueuse/core@10.11.1(vue@3.4.38(typescript@5.4.5))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.20
+      '@vueuse/metadata': 10.11.1
+      '@vueuse/shared': 10.11.1(vue@3.4.38(typescript@5.4.5))
+      vue-demi: 0.14.10(vue@3.4.38(typescript@5.4.5))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+
   '@vueuse/core@11.0.3(vue@3.4.38(typescript@5.4.5))':
     dependencies:
       '@types/web-bluetooth': 0.0.20
@@ -2561,7 +2589,16 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
+  '@vueuse/metadata@10.11.1': {}
+
   '@vueuse/metadata@11.0.3': {}
+
+  '@vueuse/shared@10.11.1(vue@3.4.38(typescript@5.4.5))':
+    dependencies:
+      vue-demi: 0.14.10(vue@3.4.38(typescript@5.4.5))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
 
   '@vueuse/shared@11.0.3(vue@3.4.38(typescript@5.4.5))':
     dependencies:
@@ -3766,6 +3803,15 @@ snapshots:
       picocolors: 1.0.1
 
   urijs@1.19.11: {}
+
+  use-scrollbars@0.4.11(vue@3.4.38(typescript@5.4.5)):
+    dependencies:
+      '@vueuse/core': 10.11.1(vue@3.4.38(typescript@5.4.5))
+      '@vueuse/shared': 10.11.1(vue@3.4.38(typescript@5.4.5))
+      vue: 3.4.38(typescript@5.4.5)
+      vue-demi: 0.14.10(vue@3.4.38(typescript@5.4.5))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
 
   util-deprecate@1.0.2: {}
 

@@ -17,7 +17,7 @@
       showSizeChanger
       :defaultPageSize="defaultPageSize"
       :pageSizeOptions="pageSizeOptions"
-      v-model:current="pageObj.pageIndex"
+      v-model:current="pageObj.pageNo"
       v-model:pageSize="pageObj.pageSize"
       :total="pageObj.total"
       :show-total="(total) => `共 ${total} 条`"
@@ -34,96 +34,91 @@ export default {
 }
 </script>
 <script setup>
-import { configObj } from "@/config"
 import { message } from "ant-design-vue"
 const calcX = columns.reduce((sum, currValue) => sum + currValue.width, 0) + "px"
 const props = defineProps({
-    columns: {
-      type: Array,
-      default: []
-    },
-    getList: {
-      type: Function,
-      required: true
-    },
-    pagination: {
-      type: Boolean,
-      default: false
-    },
-    onDataUpdate: {
-      type: Function
-    },
-    folding: {
-      type: Boolean,
-      default: true
-    },
-    scroll: {
-      type: Object,
-      default: { x: calcX }
-    }
-  }),
-  emit = defineEmits(["search", "reset"]),
-  tableList = ref([]),
-  defaultPageSize = ref(10),
-  pageSizeOptions = ["10", "20", "50", "100"],
-  attrs = useAttrs(),
-  slot = useSlots(),
-  folding = ref(props.folding),
-  loading = ref(false),
-  pageObj = reactive({
-    pageIndex: 1,
-    pageSize: defaultPageSize,
-    total: 0,
-    requestType: "1" // 1查询   0重置
-  })
-
-const Zhankai = defineComponent(() => {
-  const foldingFn = () => (folding.value = !folding.value)
-  return () =>
-    folding.value ? (
-      <span style={{ color: "red", cursor: "pointer" }} onClick={foldingFn}>
-        展开
-      </span>
-    ) : (
-      <span style={{ color: "red", cursor: "pointer" }} onClick={foldingFn}>
-        收起
-      </span>
-    )
+  columns: {
+    type: Array,
+    default: []
+  },
+  getList: {
+    type: Function,
+    required: true
+  },
+  requestParams: {
+    type: Object
+  },
+  pagination: {
+    type: Boolean,
+    default: false
+  },
+  onDataUpdate: {
+    type: Function
+  },
+  folding: {
+    type: Boolean,
+    default: true
+  },
+  scroll: {
+    type: Object,
+    default: { x: calcX }
+  }
+})
+const emit = defineEmits(["search", "reset"])
+const tableList = ref([])
+const defaultPageSize = ref(10)
+const pageSizeOptions = ["10", "20", "50", "100"]
+const attrs = useAttrs()
+const slot = useSlots()
+const loading = ref(false)
+const pageObj = reactive({
+  pageNo: 1,
+  pageSize: defaultPageSize,
+  total: 0,
+  requestType: "1" // 1查询   0重置
 })
 
 // 列表请求
 const requestList = async () => {
-    if (loading.value) return
-    loading.value = true
-    const { Success, Message, Data } = await props?.getList?.(pageObj).catch((res) => {
+  if (loading.value) return
+  loading.value = true
+  const { data, code, msg } = await props
+    .getList?.({
+      page: pageObj.pageNo,
+      limt: pageObj.pageSize,
+      ...props.requestParams
+    })
+    .catch((res) => {
       // debugger
       loading.value = false
     })
-    loading.value = false
-    if (!Success) return message.error(Message)
-    pageObj.total = Data.TotalCount
-    if (props?.onDataUpdate) tableList.value = props?.onDataUpdate?.(Data.Data) ?? []
-    else tableList.value = Data?.Data ?? []
-  },
-  search = (type) => {
-    pageObj.pageIndex = 1
-    pageObj.requestType = type
-    pageObj.pageSize = defaultPageSize
-    requestList()
+  loading.value = false
+  if (code !== 0) return message.error(msg)
+  pageObj.total = data.total
+  if (props?.onDataUpdate) {
+    tableList.value = props?.onDataUpdate?.(data.list) ?? []
+  } else {
+    tableList.value = data?.list ?? []
   }
+}
+const search = (type) => {
+  pageObj.pageNo = 1
+  pageObj.requestType = type
+  pageObj.pageSize = defaultPageSize
+  requestList()
+}
 
 // 分页相关
-const onChange = (pageIndex) => {
-    pageObj.pageIndex = pageIndex
-    requestList()
-  },
-  showSizeChange = (pageIndex, pageSize) => {
-    Object.assign(pageObj, {
-      pageIndex: 1,
-      pageSize
-    })
-  }
-const ifShowCard = computed(() => slot?.formSearch?.().length && slot?.btnOption?.().length)
+const onChange = (pageNo) => {
+  pageObj.pageNo = pageNo
+  requestList()
+}
+const showSizeChange = (pageNo, pageSize) => {
+  Object.assign(pageObj, {
+    pageNo: 1,
+    pageSize
+  })
+}
 onMounted(() => {
   requestList()
 })
@@ -133,6 +128,7 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .self-table {
+  height: 100%;
   margin-top: 10px;
 }
 
