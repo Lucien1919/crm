@@ -15,7 +15,7 @@ export type LoginParams = {
   captcha: number
 }
 export const login = async (data: LoginParams) => {
-  const res = await request<string>({
+  const res = await request<any>({
     url: "/systemuser/login",
     method: "post",
     data

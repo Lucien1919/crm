@@ -3,47 +3,77 @@ import { computed, onMounted, reactive, ref, toRefs } from "vue"
 import proTable from "@/components/proTable.vue"
 import { getOrderList, type OrderParams } from "@/api/order"
 import { resetFields } from "@/utils"
+import { useCodeListStore } from "@/stores/codeList"
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt"
+const CodeListStore = useCodeListStore()
 
 const columns = [
   {
     title: "销售合同编号",
-    dataIndex: "po"
-    // width: 150
+    dataIndex: "po",
+    width: 200,
+    ellipsis: true
   },
   {
     title: "标准客户名称",
-    dataIndex: "name"
+    dataIndex: ["customer", "name"],
+    width: 200,
+    ellipsis: true
     // width: 150
   },
   {
     title: "型号规格",
-    dataIndex: ""
+    dataIndex: ["order_device_types", 0, "device_type_name"],
+    width: 200,
+    ellipsis: true
     // width: 150
   },
   {
     title: "销售不含税价",
-    dataIndex: "unit_price"
-    // width: 150
+    dataIndex: ["order_device_types", 0, "unit_price"],
+    width: 150
   },
   {
     title: "销售含税价",
-    dataIndex: ""
-    // width: 150
+    dataIndex: ["order_device_types", 0, "tax_rate"],
+    width: 150
   },
   {
     title: "下单总数",
-    dataIndex: "device_count"
-    // width: 150
+    dataIndex: ["order_device_types", 0, "device_count"],
+    width: 150
   },
   {
     title: "附件",
-    dataIndex: "device_count"
-    // width: 150
+    //下划线分割
+    dataIndex: ["order_device_types", 0, "attach_file"],
+    width: 150
+  },
+  {
+    title: "合同签订日期",
+    dataIndex: "order_time",
+    width: 150,
+    customRender: ({ value }: any) => value.slice(0, 11)
+  },
+  {
+    title: "客户经理",
+    dataIndex: "",
+    width: 150
+  },
+  {
+    title: "收款条件",
+    dataIndex: ["delivery_type", "name"],
+    width: 200
+  },
+  {
+    title: "状态",
+    dataIndex: "",
+    width: 150
   },
   {
     title: "操作",
     dataIndex: "op",
-    width: 150,
+    width: 260,
     fixed: "right"
   }
 ]
@@ -82,16 +112,23 @@ const formatTableFun = (tableData: any) => {
 
 const tableRef = ref()
 const submit = () => {
-  console.log(searchForm.value)
   tableRef.value.doQuery()
 }
 
 const reset = () => {
-  resetFields(searchForm.value)
+  console.log(searchForm.value)
   tableRef.value.doQuery()
+}
+
+const filterCode = (inputValue: string, option: any) => {
+  console.log(inputValue, option.name)
+
+  return option.name.indexOf(inputValue) > -1
 }
 onMounted(() => {
   //
+  CodeListStore.getCodeList("customer")
+  CodeListStore.getCodeList("device")
 })
 </script>
 <template>
@@ -106,19 +143,41 @@ onMounted(() => {
           </a-col>
           <a-col :span="8">
             <a-form-item label="标准客户名称">
-              <a-input v-model:value="searchForm.customer"></a-input>
+              <a-select
+                v-model:value="searchForm.customer"
+                show-search
+                allowClear
+                :options="CodeListStore.codeList['customer']"
+                :fieldNames="{ label: 'name', value: 'id' }"
+                :filter-option="filterCode"
+                @change="submit()"
+              ></a-select>
             </a-form-item>
           </a-col>
           <a-col :span="8">
             <a-form-item label="型号规格">
-              <a-input v-model:value="searchForm.device_type_id"></a-input>
+              <a-select
+                v-model:value="searchForm.device_type_id"
+                show-search
+                allowClear
+                :options="CodeListStore.codeList['device']"
+                :fieldNames="{ label: 'name', value: 'id' }"
+                :filter-option="filterCode"
+                @change="submit()"
+              ></a-select>
             </a-form-item>
           </a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :span="8">
             <a-form-item label="出货状态">
-              <a-input v-model:value="searchForm.delivery_state"></a-input>
+              <a-select
+                v-model:value="searchForm.delivery_state"
+                show-search
+                :options="CodeListStore.codeList['deliveryState']"
+                :fieldNames="{ label: 'name', value: 'id' }"
+                :filter-option="filterCode"
+              ></a-select>
             </a-form-item>
           </a-col>
           <a-col :span="8">
@@ -128,7 +187,7 @@ onMounted(() => {
           </a-col>
           <a-col :span="8" style="text-align: right">
             <a-button type="primary" html-type="submit">查询</a-button>
-            <a-button style="margin: 0 8px" @click="reset">重置</a-button>
+            <a-button style="margin-left: 8px" @click="reset">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -137,7 +196,12 @@ onMounted(() => {
       <pro-table ref="tableRef" :columns="columns" :reqParams="searchForm" :reqApi="getOrderList">
         <template #bodyCell="{ column }">
           <template v-if="column.dataIndex === 'op'">
-            <a>action</a>
+            <div class="op-btn">
+              <a-button type="link">出货</a-button>
+              <a-button type="link">编辑</a-button>
+              <a-button type="link">删除</a-button>
+              <a-button type="link">出货编辑</a-button>
+            </div>
           </template>
         </template>
       </pro-table>

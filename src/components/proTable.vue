@@ -80,6 +80,10 @@ const loadData = async () => {
       pageSize: pageData.value.pageSize,
       ...props.reqParams
     })
+    if (!data || data.list.length < 0) {
+      tableData.value = []
+      return
+    }
     tableData.value = props.formatTableFun ? props.formatTableFun(data.list) : data.list
     pageData.value.total = data.total
   } finally {

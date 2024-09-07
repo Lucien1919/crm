@@ -13,7 +13,7 @@ export type OrderParams = {
   order_time_end: string
 }
 export const getOrderList = async (params: OrderParams) => {
-  const res = await request<string>({
+  const res = await request<any>({
     url: `/order/index?${parseQueryStr(params)}`,
     method: "get"
   })

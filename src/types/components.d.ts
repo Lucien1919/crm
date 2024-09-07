@@ -24,6 +24,7 @@ declare module 'vue' {
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     ARangePicker: typeof import('ant-design-vue/es')['RangePicker']
     ARow: typeof import('ant-design-vue/es')['Row']
+    ASelect: typeof import('ant-design-vue/es')['Select']
     ASubMenu: typeof import('ant-design-vue/es')['SubMenu']
     ATable: typeof import('ant-design-vue/es')['Table']
     ProTable: typeof import('./../components/proTable.vue')['default']
