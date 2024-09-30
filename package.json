@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "serve:dev": "vite",
-    "serve:prod": "vite  --mode production",
     "build:dev": "vite build --mode development",
     "build:prod": "vite build --mode production",
+    "publish-test": "scp -rp D:\\work\\vidagrid_erp\\app\\client_vue\\dist\\* root@117.73.13.129:/vdc1/erp/views_vue",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
     "format": "prettier --write ."
@@ -16,7 +16,7 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@vueuse/components": "^11.0.3",
     "@vueuse/core": "^11.0.3",
-    "ant-design-vue": "^4.2.3",
+    "ant-design-vue": "^4.2.5",
     "axios": "^1.7.5",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
@@ -30,6 +30,7 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
     "@types/crypto-js": "^4.2.2",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.14.5",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",

@@ -14,7 +14,7 @@ const formState = reactive({
 
 const codeImgRef = ref()
 const refrashCode = () => {
-  codeImgRef.value.src = document.location.origin + "/api" + "/captcha?" + Date.now()
+  codeImgRef.value.src = import.meta.env.VITE_API + "/captcha?" + Date.now()
 }
 
 const validatePass = async (_rule: Rule, value: string) => {
@@ -43,7 +43,12 @@ const handleFinish = async (values: keyof typeof formState) => {
     captcha: Number(formState.verifiCode)
   }
   const { data, code } = await login(params)
+  console.log(data)
   if (code == 0) {
+    localStorage.setItem("userId", data.Id)
+    localStorage.setItem("userRole", data.Role)
+    localStorage.setItem("username", data.Name)
+    localStorage.setItem("dispaly_field_ids", data.DisplayFieldIds)
     router.push("/")
   }
 }
@@ -105,11 +110,13 @@ onMounted(() => {
     box-shadow: 0 0 36px 0 rgba(0, 0, 0, 0.09);
     border-radius: 20px;
     padding: 80px;
+
     &-img {
       // margin-top: 10px;
       width: 200px;
       height: 50px;
     }
+
     &-btn {
       width: 100%;
     }

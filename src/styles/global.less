@@ -40,10 +40,25 @@ body {
       }
     }
   }
+  .nesting-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    div {
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+    div:not(:last-child) {
+      border-bottom: #d6d0d0 solid 1px;
+    }
+  }
 }
 .ant-table-cell {
-  font-size: 16px;
-  padding: 10px 8px !important;
+  font-size: 14px;
+  padding: 0 8px !important;
+  height: 50px;
+  max-height: 50px;
 }
 
 .op-btn {
@@ -53,7 +68,10 @@ body {
 }
 
 .ant-form-item-label > label {
-  font-size: 16px !important;
+  font-size: 14px !important;
+}
+.ant-form-item {
+  margin-bottom: 14px;
 }
 
 /* 整个滚动条 */

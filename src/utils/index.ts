@@ -26,13 +26,26 @@ export const parseQueryStr = (obj: any) => {
   return str.slice(0, -1)
 }
 
-/**
- * 表单重置
- * @param obj 表单对象
- * @returns
- */
+// 表单重置
+
 export const resetFields = (obj: any) => {
-  Object.keys(obj).forEach((key) => {
-    obj.key = ""
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      obj[key] = ""
+    }
+  }
+}
+
+// 根据code获取name
+export const getCodeName = (codeList: any, code: number) => {
+  return codeList.find((item: any) => item.id == code)?.name || "未知类型"
+}
+
+// 格式化对象
+export const formatObj = (obj: any) => {
+  Object.keys(obj).map((key: string) => {
+    ;(obj as any)[key] = (obj as any)[key] || "--"
+    return
   })
+  return obj
 }

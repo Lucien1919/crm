@@ -21,7 +21,7 @@ const Plugins = [
     template: "index.html",
     inject: {
       data: {
-        title: "ERP"
+        title: "CRM"
       }
     }
   }),
@@ -85,19 +85,19 @@ export default defineConfig({
     // 代理
     proxy: {
       "/api": {
-        target: "http://testerp.vidagrid.com",
+        target: "http://testerp.vidagrid.com/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "")
       }
     }
+  },
+  css: {
+    // css预处理器
+    preprocessorOptions: {
+      less: {
+        charset: false,
+        additionalData: ["@import '@/styles/global.less';"]
+      }
+    }
   }
-  // css: {
-  //   // css预处理器
-  //   preprocessorOptions: {
-  //     less: {
-  //       charset: false,
-  //       additionalData: ["@import '@/styles/global.less';"]
-  //     }
-  //   }
-  // }
 })

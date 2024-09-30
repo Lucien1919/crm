@@ -30,3 +30,48 @@ export const geDeviceList = async () => {
   })
   return res
 }
+export const getDevicePackageList = async () => {
+  const res = await request<any>({
+    url: `/customer/index`,
+    method: "post"
+  })
+  return res
+}
+export const getRenewOrderList = async () => {
+  const res = await request<any>({
+    url: `/reneworder/all`,
+    method: "get"
+  })
+  return res
+}
+export const getSingleSimList = async () => {
+  const res = await request<any>({
+    url: `/singlesimorder/all`,
+    method: "get"
+  })
+  return res
+}
+
+export const getSnModuleList = async () => {
+  const res = await request<any>({
+    url: `/snmodule/index`,
+    method: "get"
+  })
+  return res
+}
+
+export const getSimPackageList = async () => {
+  const res = await request<any>({
+    url: `/simpackage/index`,
+    method: "get"
+  })
+  return res
+}
+
+export const getCloudPackageList = async () => {
+  const res = await request<any>({
+    url: `/cloudpackage/index`,
+    method: "get"
+  })
+  return res
+}

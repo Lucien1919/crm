@@ -62,6 +62,7 @@ const antPagination = computed(() => {
 })
 
 const tableData = ref([])
+const originData = ref([])
 const loading = ref(false)
 
 const tabeChange = (pagination: any, filters: any, sorter: any, { action, currentDataSource }: any) => {
@@ -74,16 +75,24 @@ const tabeChange = (pagination: any, filters: any, sorter: any, { action, curren
 const loadData = async () => {
   if (loading.value) return
   try {
+    const params = { ...props.reqParams }
+    Object.keys(params).map((key) => {
+      if (params[key] == "" || params[key] == null) {
+        delete params[key]
+      }
+    })
+    delete params.date
     loading.value = true
     const { data } = await props.reqApi({
-      pageNo: pageData.value.pageNo,
-      pageSize: pageData.value.pageSize,
-      ...props.reqParams
+      page: pageData.value.pageNo,
+      limit: pageData.value.pageSize,
+      ...params
     })
     if (!data || data.list.length < 0) {
       tableData.value = []
       return
     }
+    originData.value = data.list || []
     tableData.value = props.formatTableFun ? props.formatTableFun(data.list) : data.list
     pageData.value.total = data.total
   } finally {
@@ -101,7 +110,7 @@ const doRefresh = () => {
   doQuery()
 }
 
-defineExpose({ doQuery, tableData })
+defineExpose({ doQuery, tableData, pageData })
 const scroll = ref()
 onMounted(() => {
   if (!props.isImmediate) {
@@ -122,7 +131,6 @@ onMounted(() => {
 <template>
   <a-table
     ref="tableRef"
-    class="pro-table"
     :pagination="antPagination"
     :columns="props.columns"
     :data-source="tableData"
@@ -131,6 +139,8 @@ onMounted(() => {
     :scroll="scroll"
     v-bind="attrs"
     @change="tabeChange"
+    :row-class-name="(_record, index) => (index % 2 === 1 ? 'table-striped' : '')"
+    bordered
   >
     <template v-for="(value, key) in slot" v-slot:[key]="slotProps" :key="key">
       <slot :name="key" v-bind="slotProps"></slot>
@@ -141,5 +151,7 @@ onMounted(() => {
 <style lang="less" scoped>
 // :deep(.ant-table-cell) {
 //   font-size: 16px;
-// }
+:deep(.table-striped) td {
+  background-color: #fafafa;
+}
 </style>

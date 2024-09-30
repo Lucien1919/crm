@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { RouterLink, RouterView } from "vue-router"
-import { theme } from "ant-design-vue"
+// import theme from "ant-design-vue/es/theme"
 import { authRoutes, type RowMeta } from "@/router/index"
 const themeName = ref<"defaultAlgorithm" | "darkAlgorithm">("defaultAlgorithm")
 import { ref } from "vue"
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from "@ant-design/icons-vue"
 
 const router = useRouter()
 const route = useRoute()
@@ -14,26 +13,40 @@ const breadList = computed(() => {
 })
 
 const topMenuList = ref(authRoutes[0].children)
-const sideMenuList = ref(authRoutes[0].children![0].children)
+const sideMenuList = ref()
 
-const selectTopMenu = ref<string[]>([topMenuList.value![0].name as string])
-const selectSideMenu = ref<string[]>([sideMenuList.value![0].name as string])
-const selectSideMenuItem = ref<string[]>([sideMenuList.value![0].children![0].name as string])
+const selectTopMenu = ref<string[]>()
+const selectSideMenu = ref<string[]>()
 
-const chooseTopMenu = (item: RowMeta) => {
-  sideMenuList.value = item.children
-  console.log(sideMenuList.value)
-}
-
-watch(
-  () => selectSideMenuItem.value,
-  (val) => {
-    const result = router.getRoutes().find((item) => item.name == val[0])
+const activeRouteName = computed({
+  get: () => {
+    return [route.name]
+  },
+  set: (v) => {
+    const result = router.getRoutes().find((item) => item.name == v[0])
     router.push({ ...result })
   }
-)
+}) as Ref<string[]>
+const chooseTopMenu = (item: RowMeta) => {
+  sideMenuList.value = item.children
+  selectSideMenu.value = [sideMenuList.value![0].name as string]
+  router.push(item.path)
+}
 
-onMounted(() => {})
+onMounted(() => {
+  topMenuList.value?.map((item) => {
+    if (route.path.includes(item.path)) {
+      selectTopMenu.value = [item.name as string]
+      sideMenuList.value = item.children
+    }
+  })
+
+  sideMenuList.value?.map((item: any) => {
+    if (route.path.includes(item.path)) {
+      selectSideMenu.value = [item.name as string]
+    }
+  })
+})
 </script>
 
 <template>
@@ -49,7 +62,7 @@ onMounted(() => {})
     <a-layout>
       <a-layout-sider width="180" style="background: #fff">
         <a-menu
-          v-model:selectedKeys="selectSideMenuItem"
+          v-model:selectedKeys="activeRouteName"
           v-model:openKeys="selectSideMenu"
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"

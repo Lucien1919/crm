@@ -13,7 +13,6 @@ module.exports = {
   trailingComma: "none",
   // 对象大括号直接是否有空格，默认为true，效果：{ foo: bar }
   bracketSpacing: true,
-  vueIndentScriptAndStyle: false,
-  vueIndentScriptAndStyle: false,
-  vueIndentTemplate: false
+  //不对vue中的script及style标签缩进
+  vueIndentScriptAndStyle: false
 }

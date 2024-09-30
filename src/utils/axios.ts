@@ -13,7 +13,7 @@ let source = axios.CancelToken.source()
 
 const instance = axios.create({
   timeout: 10000,
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_API,
   withCredentials: true
 })
 
@@ -35,6 +35,12 @@ instance.interceptors.response.use(
     }
   },
   (err: AxiosError) => {
+    if (err.status == 401) {
+      message.error("登录超时，请重新登录")
+      router.push("/login")
+      source.cancel("Operation canceled due to 401 Unauthorized.")
+      source = axios.CancelToken.source()
+    }
     return Promise.reject(err)
   }
 )
